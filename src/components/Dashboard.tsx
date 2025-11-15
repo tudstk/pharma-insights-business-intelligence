@@ -6,6 +6,13 @@ import { TrendingUp, TrendingDown, Activity, Package } from "lucide-react";
 import { SalesChart } from "./SalesChart";
 import { CategoryComparison } from "./CategoryComparison";
 import { MetricCard } from "./MetricCard";
+import { ForecastChart } from "./ForecastChart";
+import { PriceSimulator } from "./PriceSimulator";
+import { PieChartDistribution } from "./PieChartDistribution";
+import { StackedAreaChart } from "./StackedAreaChart";
+import { CorrelationMatrix } from "./CorrelationMatrix";
+import { RadarComparison } from "./RadarComparison";
+import { ScatterAnalysis } from "./ScatterAnalysis";
 import { parseCsvData, MEDICINE_CATEGORIES, type SalesData, type MedicineCategory } from "@/utils/csvParser";
 import dailyCsv from "@/data/salesdaily.csv?raw";
 import weeklyCsv from "@/data/salesweekly.csv?raw";
@@ -58,7 +65,7 @@ export const Dashboard = () => {
               Pharma Sales Analytics
             </h1>
             <p className="text-muted-foreground mt-2">
-              Decision support system for pharmaceutical sales analysis
+              Comprehensive decision support system with forecasting and interactive analysis
             </p>
           </div>
           
@@ -122,9 +129,35 @@ export const Dashboard = () => {
             </TabsList>
           </Card>
 
-          <TabsContent value={timeView} className="space-y-4">
-            <SalesChart data={data} selectedCategory={selectedCategory} timeView={timeView} />
-            <CategoryComparison data={data} timeView={timeView} />
+          <TabsContent value={timeView} className="space-y-6">
+            {/* Row 1: Main sales chart and forecast */}
+            <div className="grid gap-6 lg:grid-cols-2">
+              <SalesChart data={data} selectedCategory={selectedCategory} timeView={timeView} />
+              {selectedCategory !== "all" && (
+                <ForecastChart data={data} selectedCategory={selectedCategory} />
+              )}
+              {selectedCategory === "all" && (
+                <PieChartDistribution data={data} />
+              )}
+            </div>
+
+            {/* Row 2: Price simulator (full width) */}
+            <PriceSimulator data={data} />
+
+            {/* Row 3: Category comparison and stacked area */}
+            <div className="grid gap-6 lg:grid-cols-2">
+              <CategoryComparison data={data} timeView={timeView} />
+              <StackedAreaChart data={data} timeView={timeView} />
+            </div>
+
+            {/* Row 4: Scatter and Radar */}
+            <div className="grid gap-6 lg:grid-cols-2">
+              <ScatterAnalysis data={data} />
+              <RadarComparison data={data} />
+            </div>
+
+            {/* Row 5: Correlation matrix (full width) */}
+            <CorrelationMatrix data={data} />
           </TabsContent>
         </Tabs>
       </div>
