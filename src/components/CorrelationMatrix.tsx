@@ -1,3 +1,5 @@
+
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { MEDICINE_CATEGORIES, type SalesData } from "@/utils/csvParser";
 
@@ -6,6 +8,7 @@ interface CorrelationMatrixProps {
 }
 
 export const CorrelationMatrix = ({ data }: CorrelationMatrixProps) => {
+  const [displayMode, setDisplayMode] = useState<'color' | 'symbol' | 'both'>('color');
   // Calculate correlation between categories
   const calculateCorrelation = (cat1: string, cat2: string): number => {
     const values1 = data.map(row => row[cat1 as keyof SalesData] as number || 0);
@@ -25,6 +28,7 @@ export const CorrelationMatrix = ({ data }: CorrelationMatrixProps) => {
   };
 
   const getColor = (correlation: number) => {
+    if (displayMode === 'symbol') return '';
     const abs = Math.abs(correlation);
     if (abs > 0.7) return correlation > 0 ? 'bg-secondary/80' : 'bg-destructive/80';
     if (abs > 0.4) return correlation > 0 ? 'bg-secondary/50' : 'bg-destructive/50';
@@ -32,13 +36,39 @@ export const CorrelationMatrix = ({ data }: CorrelationMatrixProps) => {
     return 'bg-muted';
   };
 
+  const getSymbol = (correlation: number) => {
+    if (displayMode === 'color') return '';
+    if (correlation > 0.7) return '⬆️';
+    if (correlation < -0.7) return '⬇️';
+    if (correlation > 0.4) return '↗️';
+    if (correlation < -0.4) return '↘️';
+    if (correlation > 0.2) return '➡️';
+    if (correlation < -0.2) return '⬅️';
+    return '•';
+  };
+
   return (
     <Card className="p-6 shadow-lg border-border/50">
-      <div className="mb-4">
-        <h2 className="text-2xl font-semibold text-foreground">Category Correlation Matrix</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Correlation coefficients between medicine categories
-        </p>
+      <div className="mb-4 flex flex-col md:flex-row md:items-end md:justify-between gap-2">
+        <div>
+          <h2 className="text-2xl font-semibold text-foreground">Category Correlation Matrix</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Correlation coefficients between medicine categories
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="displayMode" className="text-xs font-medium text-muted-foreground">Display:</label>
+          <select
+            id="displayMode"
+            value={displayMode}
+            onChange={e => setDisplayMode(e.target.value as any)}
+            className="border rounded px-2 py-1 text-xs"
+          >
+            <option value="color">Color</option>
+            <option value="symbol">Symbol</option>
+            <option value="both">Both</option>
+          </select>
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -67,7 +97,9 @@ export const CorrelationMatrix = ({ data }: CorrelationMatrixProps) => {
                       className={`p-2 text-center text-xs font-semibold border border-border ${getColor(correlation)} transition-colors`}
                       title={`Correlation: ${correlation.toFixed(3)}`}
                     >
-                      {correlation.toFixed(2)}
+                      {displayMode === 'color' && correlation.toFixed(2)}
+                      {displayMode === 'symbol' && getSymbol(correlation)}
+                      {displayMode === 'both' && <span>{correlation.toFixed(2)} {getSymbol(correlation)}</span>}
                     </td>
                   );
                 })}
