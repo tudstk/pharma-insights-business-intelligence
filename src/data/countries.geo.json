@@ -1,0 +1,45 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "France", "iso_a2": "FR" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[2.4, 51.1], [8.2, 49.0], [7.6, 47.8], [6.0, 46.4], [3.0, 43.0], [-1.2, 43.2], [-5.0, 48.6], [2.4, 51.1]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Germany", "iso_a2": "DE" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[8.5, 55.1], [15.0, 54.3], [14.9, 51.0], [13.0, 48.8], [10.0, 47.5], [6.0, 50.0], [7.0, 53.5], [8.5, 55.1]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Spain", "iso_a2": "ES" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-9.0, 43.7], [-1.5, 43.0], [3.3, 42.5], [3.0, 40.0], [0.0, 38.7], [-3.5, 36.0], [-7.0, 37.0], [-9.0, 43.7]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Italy", "iso_a2": "IT" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[7.0, 46.1], [12.4, 46.6], [14.0, 44.2], [12.5, 42.5], [10.0, 41.2], [9.0, 43.5], [7.0, 46.1]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Romania", "iso_a2": "RO" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[22.0, 48.2], [27.5, 47.5], [29.7, 45.3], [26.0, 43.8], [22.5, 44.2], [21.0, 45.1], [22.0, 48.2]]]
+      }
+    }
+  ]
+}

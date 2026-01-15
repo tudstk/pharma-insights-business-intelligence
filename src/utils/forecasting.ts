@@ -1,9 +1,18 @@
+export type TrendType = "linear" | "exponential" | "movingAverage";
+
+export interface TrendConfig {
+  type: TrendType;
+  window?: number; // For moving average
+  alpha?: number; // For exponential smoothing
+}
+
 export interface ForecastPoint {
   date: string;
   actual?: number;
   forecast: number;
   lowerBound: number;
   upperBound: number;
+  trend?: "up" | "down" | "stable";
 }
 
 export const linearRegressionForecast = (
@@ -23,6 +32,7 @@ export const linearRegressionForecast = (
   const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
   const intercept = (sumY - slope * sumX) / n;
 
+  
   let sse = 0;
   for (let i = 0; i < n; i++) {
     const predicted = slope * i + intercept;
@@ -102,4 +112,47 @@ export const exponentialSmoothing = (
   }
 
   return results;
+};
+
+
+function calculateTrendDirection(
+  forecast: number,
+  previous: number,
+  threshold: number = 0.02
+): "up" | "down" | "stable" {
+  const change = (forecast - previous) / previous;
+  if (change > threshold) return "up";
+  if (change < -threshold) return "down";
+  return "stable";
+}
+
+
+export const generateForecast = (
+  data: number[],
+  config: TrendConfig = { type: "linear" },
+  periods: number = 30
+): ForecastPoint[] => {
+  let results: ForecastPoint[] = [];
+
+  switch (config.type) {
+    case "linear":
+      results = linearRegressionForecast(data, periods);
+      break;
+    case "movingAverage":
+      results = movingAverageForecast(data, config.window || 7, periods);
+      break;
+    case "exponential":
+      results = exponentialSmoothing(data, config.alpha || 0.3, periods);
+      break;
+  }
+
+  // Add trend direction to each point
+  const dataPoints = [...data, ...results.map((r) => r.forecast)];
+  return results.map((point, idx) => ({
+    ...point,
+    trend: calculateTrendDirection(
+      point.forecast,
+      dataPoints[data.length + idx - 1] || point.forecast
+    ),
+  }));
 };
