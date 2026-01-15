@@ -6,7 +6,6 @@ export interface ForecastPoint {
   upperBound: number;
 }
 
-// Simple Linear Regression for forecasting
 export const linearRegressionForecast = (
   data: number[],
   periods: number = 30
@@ -24,7 +23,6 @@ export const linearRegressionForecast = (
   const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
   const intercept = (sumY - slope * sumX) / n;
 
-  // Calculate standard error for confidence intervals
   let sse = 0;
   for (let i = 0; i < n; i++) {
     const predicted = slope * i + intercept;
@@ -49,7 +47,6 @@ export const linearRegressionForecast = (
   return results;
 };
 
-// Moving Average forecast
 export const movingAverageForecast = (
   data: number[],
   window: number = 7,
@@ -76,7 +73,6 @@ export const movingAverageForecast = (
   return results;
 };
 
-// Exponential Smoothing
 export const exponentialSmoothing = (
   data: number[],
   alpha: number = 0.3,
@@ -84,12 +80,10 @@ export const exponentialSmoothing = (
 ): ForecastPoint[] => {
   let lastSmoothed = data[0];
   
-  // Calculate smoothed values for existing data
   for (let i = 1; i < data.length; i++) {
     lastSmoothed = alpha * data[i] + (1 - alpha) * lastSmoothed;
   }
 
-  // Calculate trend
   const recentData = data.slice(-10);
   const trend = (recentData[recentData.length - 1] - recentData[0]) / recentData.length;
 
@@ -97,7 +91,7 @@ export const exponentialSmoothing = (
   
   for (let i = 0; i < periods; i++) {
     const forecast = lastSmoothed + trend * (i + 1);
-    const margin = Math.abs(forecast * 0.2); // 20% confidence interval
+    const margin = Math.abs(forecast * 0.2);
     
     results.push({
       date: `Day ${data.length + i + 1}`,
